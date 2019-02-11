@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:02:08 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/07 17:30:23 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/08 18:05:40 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,18 @@
 # include <fcntl.h>
 # include <unistd.h>
 
-typedef struct		s_gnl
+#define BUFF_SIZE 32
+{
+	static size_t	BUFF_SIZE;
+	BUFF_SIZE = 32;
+}
+
+
+typedef struct		s_list
 {
 	char*			str;
-	size_t			last;
-	struct s_gnl	*next;
-}					t_gnl;
-
-#define BUFF_SIZE 32;
+	size_t			strl;
+	struct s_list	*next;
+}					t_list;
 
 #endif
