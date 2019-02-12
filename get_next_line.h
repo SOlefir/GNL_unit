@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:02:08 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/12 17:31:38 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/12 18:36:14 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 
 #define BUFF_SIZE 32;
 
-typedef struct		s_list
+typedef struct		s_partstr
 {
-	char*			str;
-	size_t			strl;
-	struct s_list	*next;
-}					t_list;
+	char*				str;
+	size_t				strl;
+	struct s_partstr	*next;
+}						t_partstr;
 
 #endif
