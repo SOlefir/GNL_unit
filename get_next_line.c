@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:26:01 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/12 17:11:34 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/12 17:18:48 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int		main()
 {
 	char *line;
 
-	line = ft_strnew(2);
+	line = ft_strnew(3);
 	get_next_line(0, &line);
 	return (0);
 }
