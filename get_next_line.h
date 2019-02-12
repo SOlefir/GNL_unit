@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:02:08 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/08 18:05:40 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/12 17:31:38 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,9 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <unistd.h>
+# include "../libft/libft.h"
 
-#define BUFF_SIZE 32
-{
-	static size_t	BUFF_SIZE;
-	BUFF_SIZE = 32;
-}
-
+#define BUFF_SIZE 32;
 
 typedef struct		s_list
 {
