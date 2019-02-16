@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:26:01 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/13 14:27:19 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/13 15:43:15 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ size_t		is_end_str(char *str, size_t count)
 	size_t i;
 
 	i = 0;
-	while (i != count || str[i] != '\0' || str[i] != '\n')
+	while (i != count || str[i] != '\n')
 		i++;
 	if (str[i] == '\n')
-		i = -1;
+		i = -1; /* i++; i сохранить в стат переменную, след строчка return(-1) */
 	return (i);
 }
 
@@ -28,6 +28,7 @@ static size_t		red_and_white(const int fd, size_t BUFF_SIZE, t_partstr *head)
 {
 	size_t			i;
 	size_t			there;
+	static long int	
 	t_partstr		*temp;
 	char			*buf;
 
