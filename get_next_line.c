@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:26:01 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/13 15:43:15 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/16 16:26:27 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,15 @@ size_t		is_end_str(char *str, size_t count)
 		i = -1; /* i++; i сохранить в стат переменную, след строчка return(-1) */
 	return (i);
 }
+/* вместо этой фнкц использовать либовскую с поиском чара в строке. а эту фнкц заменить на ту, которая будет проверять фд-файл в листах */  
 
-static size_t		red_and_white(const int fd, size_t BUFF_SIZE, t_partstr *head)
+static size_t		red_and_white(const int fd, size_t BUFF_SIZE, t_partstr *head) /* добавить проверку хеда. если в нем что-то лежит, то  */
 {
 	size_t			i;
-	size_t			there;
-	static long int	
+	size_t			there = 1;
 	t_partstr		*temp;
-	char			*buf;
+	char			*buf; 
 
-	there = 1;
 	while (i = read(fd, *buf, BUFF_SIZE) > 0 || there > 0)
 	{
 		if (head == NULL)
@@ -92,5 +91,5 @@ int		main()
 	str = ft_strnew(3);
 	get_next_line(0, &str);
 	return (0);
-	укенг
 }
+/* добавить проверку для фд в т.ч. на считывание. туда же можно засунуть вызов функции которая считывает и записывает */

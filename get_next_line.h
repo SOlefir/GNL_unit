@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:02:08 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/12 18:36:14 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/17 16:05:32 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,6 @@
 # include <unistd.h>
 # include "../libft/libft.h"
 
-#define BUFF_SIZE 32;
-
-typedef struct		s_partstr
-{
-	char*				str;
-	size_t				strl;
-	struct s_partstr	*next;
-}						t_partstr;
+#define BUFF_SIZE 500;
 
 #endif
