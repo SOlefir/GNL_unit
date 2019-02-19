@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/17 14:17:10 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/19 11:24:59 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/19 11:49:37 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,17 @@ static int			read_and_write(t_list *head, char **buf, const int fd, int	*count)
 	{
 		if (head == NULL)
 			{
-				head = ft_lstnew(&buf, (size_t)i);
+				head = ft_lstnew(&buf, (size_t)fd);
 				temp = head;
 			}
 		else
 			{
-				temp->next = ft_lstnew(&buf, (size_t)i);
+				temp->next = ft_lstnew(&buf, (size_t)fd);
 				temp = temp->next;
 				*count =+ i;
 			}
 		there = ft_strchr(buf, '\n');
-		*count = *count - (i - (*buf + *there));
+		*count = *count - (i - (*buf + *there)); /*это попытка отнять из каунта \н, по которому я буду малочить память в лайн,*/
 	}
 	return (i);
 }
@@ -81,16 +81,20 @@ static int			read_and_write(t_list *head, char **buf, const int fd, int	*count)
 int		get_next_line(const int fd, char **line)
 {
 	t_list			*buffer;
+	t_list			*temp;
 	static t_list	*storage = NULL;
 	int				i;
-	int				*count[1];
+	size_t			*count[1]; /*так вообще можно? это чтобы считать строки когда я их создаю*/
 	char			*buf[BUFF_SIZE];
 
 	if (fd < 0 || !line || read(fd, 0, 0) < 0)
 		return (-1);
-	buffer = find_fd(storage, fd);
-	i = read_and_write(buffer, &buf, fd, &count) != 0;
-	storage = write_in_line(buffer, count, fd, &line);
+	buffer = find_fd(storage, fd); /* ищу фд в статическом списке и записываю в голову буфера */
+	i = read_and_write(buffer, &buf, fd, &count) != 0;/*читаю из фд и пишу в стр ноды и фд*/
+	temp = storege
+	while(temp->next != NULL || temp->content_size != fd) /* нужно дойти до конца списка, чтобы новый записать */
+		temp = storage->next;
+	temp = write_in_line(buffer, *count, fd, &line);/*записываю из листов в строку, удаляю листы до того, в котором есть '\n' - его записываю в соредж*/
 	return (i);
 }
 
