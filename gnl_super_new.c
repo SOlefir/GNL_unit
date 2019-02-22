@@ -1,7 +1,7 @@
 #include "./get_next_line.h"
 #include <stdio.h>
 
-void	in_line()
+//void	in_line()
 
 int		read_in_buf(const int fd, t_gnl	*gnl)
 {
@@ -39,10 +39,11 @@ int		get_next_line(const int fd, char **line)
 	t_gnl			*temp;
 	int				i;
 
+	temp = NULL;
 	if (fd < 0 || read(fd, 0, 0) < 0)
 		return (-1);
-	temp = find_fd(gnl); 
-	in_line(temp, line);
+	//temp = find_fd(gnl); 
+	///in_line(temp, line);
 	i = read_in_buf(fd, temp);
 	return (i);		
 }
