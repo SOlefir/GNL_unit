@@ -3,6 +3,15 @@
 
 //void	in_line()
 
+	// if (gnl->end != NULL)
+	// 	gnl->str = gnl->end + 1;
+
+t_gnl	*find_fd(t_gnl	*head, int fd)
+{
+	while (head != NULL && head->fd != fd)
+		head = head->next;
+	return (head);
+}
 int		read_in_buf(const int fd, t_gnl	*gnl)
 {
 	char	buf[BUFF_SIZE + 1];
@@ -11,8 +20,7 @@ int		read_in_buf(const int fd, t_gnl	*gnl)
 	int		count;
 
 	count = 0;
-	// if (gnl->end != NULL)
-	// 	gnl->str = gnl->end + 1; (это в фнкц in_line)
+	gnl->end = NULL;
 	while (gnl->end == NULL && (i = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[i] = '\0';
@@ -27,24 +35,39 @@ int		read_in_buf(const int fd, t_gnl	*gnl)
 		gnl->end = ft_strchr(gnl->str, '\n');
 		count += i;
 	}
-	gnl->end = ft_strsub(gnl->str, (gnl->end - gnl->str), count); 
+	i = gnl->end - gnl->str;
+	gnl->end = ft_strsub(gnl->str, i + 1, count - i);
 	gnl->fd = fd;
-	printf("%s\n", gnl->str);
+	printf("[%s]\n[%s]\n", gnl->str, gnl->end);
 	return (i);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_gnl	*gnl;
+	static t_gnl	*gnl = NULL;
 	t_gnl			*temp;
 	int				i;
 
-	temp = NULL;
-	if (fd < 0 || read(fd, 0, 0) < 0)
-		return (-1);
-	//temp = find_fd(gnl); 
-	///in_line(temp, line);
+	if (!(temp = find_fd(gnl, fd)))
+	{	
+		if (!(temp = (t_gnl*)ft_memalloc(sizeof(t_gnl))))
+			{
+				printf("malloc_error_temp\n");
+				return (-1);
+			}
+		temp->next = gnl;
+		gnl = temp;
+		temp->fd = fd; 
+	}
 	i = read_in_buf(fd, temp);
+	// if (!(temp = (t_gnl*)malloc(sizeof(t_gnl))))
+	// 	{
+	// 		printf("malloc_error2\n");
+	// 		return (-1);
+	// 	}
+	if (fd < 0 || read(fd, 0, 0) < 0)
+		return (-1); 
+	//in_line(temp, line);
 	return (i);		
 }
 
