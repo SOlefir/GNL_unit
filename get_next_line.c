@@ -5,91 +5,79 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/07 17:26:01 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/16 16:26:27 by solefir          ###   ########.fr       */
+/*   Created: 2019/02/25 19:03:45 by solefir           #+#    #+#             */
+/*   Updated: 2019/02/25 19:04:50 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./get_next_line.h"
 
-size_t		is_end_str(char *str, size_t count)
+static int		in_line(t_gnl *node, char **line)
 {
-	size_t i;
+	int		i;
 
-	i = 0;
-	while (i != count || str[i] != '\n')
-		i++;
-	if (str[i] == '\n')
-		i = -1; /* i++; i сохранить в стат переменную, след строчка return(-1) */
-	return (i);
+	if (node->str == NULL)
+		return (0);
+	i = node->end != NULL ? node->end - node->str : ft_strlen(node->str);
+	if (!(*line = (char *)malloc(i + 1)))
+		return (-1);
+	ft_strncpy(*line, node->str, i);
+	(*line)[i] = '\0';
+	if (node->end != NULL)
+		node->end = ft_strsub(node->str, i + 1, node->leng - i);
+	free(node->str);
+	node->leng -= (i + 1);
+	node->str = node->end;
+	return (1);
 }
-/* вместо этой фнкц использовать либовскую с поиском чара в строке. а эту фнкц заменить на ту, которая будет проверять фд-файл в листах */  
 
-static size_t		red_and_white(const int fd, size_t BUFF_SIZE, t_partstr *head) /* добавить проверку хеда. если в нем что-то лежит, то  */
+static void		read_in_buf(const int fd, t_gnl *gnl, int *bytes)
 {
-	size_t			i;
-	size_t			there = 1;
-	t_partstr		*temp;
-	char			*buf; 
+	char	buf[BUFF_SIZE + 1];
+	char	*temp;
+	int		i;
 
-	while (i = read(fd, *buf, BUFF_SIZE) > 0 || there > 0)
+	while (gnl->end == NULL && (*bytes = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		if (head == NULL)
-			{
-				head = ft_lstnew(*buf, i);
-				temp = head;
-			}
+		buf[*bytes] = '\0';
+		if (gnl->str == NULL)
+			gnl->str = ft_strdup(buf);
 		else
 		{
-			temp->next = ft_lstnew(*buf, i);
-			temp = temp->next;
+			temp = gnl->str;
+			gnl->str = ft_strjoin(gnl->str, buf);
+			free(temp);
 		}
-		there = is_end_str(*buf, i);
+		gnl->end = ft_strchr(gnl->str, '\n');
+		gnl->leng += *bytes;
 	}
-	return (i);
 }
 
-static void		in_line(t_partstr *head, char **line)
+static t_gnl	*find_fd(t_gnl *head, int fd)
 {
-	size_t		leng;
-	t_partstr	*node;
-	t_partstr	*temp;
-
-	leng = 0;
-	node = head;
-	while (node->next != NULL)
-		{
-			leng = leng + node->strl;
-			node = node->next;
-		}
-	line = ft_strnew(leng);
-	temp = node->next;
-	while (node->next != NULL)
-		{
-			line = temp->str;
-			temp = temp->next;
-			ft_lstdelone(node)
-		}
+	while (head != NULL && head->fd != fd)
+		head = head->next;
+	return (head);
 }
 
-int		get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
-	size_t		BUFF_SIZE;
-	int			i;
-	t_partstr	*head;
+	static t_gnl	*gnl = NULL;
+	t_gnl			*temp;
+	int				i;
 
-	head = NULL;
-	red_and_white(fd, BUFF_SIZE, head);
-	in_line(head, line);
-	return(i);
+	if (fd < 0 || read(fd, 0, 0) < 0)
+		return (-1);
+	if (!(temp = find_fd(gnl, fd)))
+	{
+		if (!(temp = (t_gnl*)ft_memalloc(sizeof(t_gnl))))
+			return (-1);
+		temp->next = gnl;
+		gnl = temp;
+		temp->fd = fd;
+	}
+	if (temp->str != NULL && (temp->end = ft_strchr(gnl->str, '\n')))
+		return (in_line(temp, line));
+	read_in_buf(fd, temp, &i);
+	return (in_line(temp, line));
 }
-
-int		main()
-{
-	char *str;
-
-	str = ft_strnew(3);
-	get_next_line(0, &str);
-	return (0);
-}
-/* добавить проверку для фд в т.ч. на считывание. туда же можно засунуть вызов функции которая считывает и записывает */

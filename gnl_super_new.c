@@ -1,8 +1,20 @@
-#include "./get_next_line.h"
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gnl_super_new.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/02/25 18:43:57 by solefir           #+#    #+#             */
+/*   Updated: 2019/02/25 19:02:01 by solefir          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static int	in_line(t_gnl *node, char **line)
-{	
+#include "./get_next_line.h"
+/*#include <stdio.h>*/
+
+static int		in_line(t_gnl *node, char **line)
+{
 	int		i;
 
 	if (node->str == NULL)
@@ -13,14 +25,14 @@ static int	in_line(t_gnl *node, char **line)
 	ft_strncpy(*line, node->str, i);
 	(*line)[i] = '\0';
 	if (node->end != NULL)
-	 	node->end = ft_strsub(node->str, i + 1, node->leng - i);
+		node->end = ft_strsub(node->str, i + 1, node->leng - i);
 	free(node->str);
 	node->leng -= (i + 1);
 	node->str = node->end;
 	return (1);
 }
 
-static void		read_in_buf(const int fd, t_gnl	*gnl, int *bytes)
+static void		read_in_buf(const int fd, t_gnl *gnl, int *bytes)
 {
 	char	buf[BUFF_SIZE + 1];
 	char	*temp;
@@ -42,37 +54,37 @@ static void		read_in_buf(const int fd, t_gnl	*gnl, int *bytes)
 	}
 }
 
-static t_gnl	*find_fd(t_gnl	*head, int fd)
+static t_gnl	*find_fd(t_gnl *head, int fd)
 {
 	while (head != NULL && head->fd != fd)
 		head = head->next;
 	return (head);
 }
 
-int		get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
 	static t_gnl	*gnl = NULL;
 	t_gnl			*temp;
 	int				i;
 
 	if (fd < 0 || read(fd, 0, 0) < 0)
-		return (-1); 
+		return (-1);
 	if (!(temp = find_fd(gnl, fd)))
-	{	
+	{
 		if (!(temp = (t_gnl*)ft_memalloc(sizeof(t_gnl))))
-				return (-1);
+			return (-1);
 		temp->next = gnl;
 		gnl = temp;
 		temp->fd = fd;
 	}
-	printf("\n[fd:%d]", temp->fd);
+	//printf("\n[fd:%d]", temp->fd);
 	if (temp->str != NULL && (temp->end = ft_strchr(gnl->str, '\n')))
-		return (in_line(temp, line));	
+		return (in_line(temp, line));
 	read_in_buf(fd, temp, &i);
 	return (in_line(temp, line));
 }
 
-int		main()
+/*int		main()
 {
 	int		fd, fd2, fd3;
 	int		i;
@@ -99,4 +111,4 @@ int		main()
 	printf("\n[gnl:%d] \n[line:%s]", i, line);
 	//
 	return (0);
-}
+}*/
