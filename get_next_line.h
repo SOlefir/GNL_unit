@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 17:02:08 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/22 20:19:55 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/25 16:15:27 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,11 @@ struct	s_gnl
 {
 	char	*str;
 	char	*end;
+	int		leng;
 	int		fd;
 	t_gnl	*next;
 };
+
+int		get_next_line(const int fd, char **line);
 
 #endif

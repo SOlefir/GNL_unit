@@ -1,29 +1,34 @@
 #include "./get_next_line.h"
 #include <stdio.h>
 
-//void	in_line()
+static int	in_line(t_gnl *node, char **line)
+{	
+	int		i;
 
-	// if (gnl->end != NULL)
-	// 	gnl->str = gnl->end + 1;
-
-t_gnl	*find_fd(t_gnl	*head, int fd)
-{
-	while (head != NULL && head->fd != fd)
-		head = head->next;
-	return (head);
+	if (node->str == NULL)
+		return (0);
+	i = node->end != NULL ? node->end - node->str : ft_strlen(node->str);
+	if (!(*line = (char *)malloc(i + 1)))
+		return (-1);
+	ft_strncpy(*line, node->str, i);
+	(*line)[i] = '\0';
+	if (node->end != NULL)
+	 	node->end = ft_strsub(node->str, i + 1, node->leng - i);
+	free(node->str);
+	node->leng -= (i + 1);
+	node->str = node->end;
+	return (1);
 }
-int		read_in_buf(const int fd, t_gnl	*gnl)
+
+static void		read_in_buf(const int fd, t_gnl	*gnl, int *bytes)
 {
 	char	buf[BUFF_SIZE + 1];
 	char	*temp;
 	int		i;
-	int		count;
 
-	count = 0;
-	gnl->end = NULL;
-	while (gnl->end == NULL && (i = read(fd, buf, BUFF_SIZE)) > 0)
+	while (gnl->end == NULL && (*bytes = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		buf[i] = '\0';
+		buf[*bytes] = '\0';
 		if (gnl->str == NULL)
 			gnl->str = ft_strdup(buf);
 		else
@@ -33,13 +38,15 @@ int		read_in_buf(const int fd, t_gnl	*gnl)
 			free(temp);
 		}
 		gnl->end = ft_strchr(gnl->str, '\n');
-		count += i;
+		gnl->leng += *bytes;
 	}
-	i = gnl->end - gnl->str;
-	gnl->end = ft_strsub(gnl->str, i + 1, count - i);
-	gnl->fd = fd;
-	printf("[%s]\n[%s]\n", gnl->str, gnl->end);
-	return (i);
+}
+
+static t_gnl	*find_fd(t_gnl	*head, int fd)
+{
+	while (head != NULL && head->fd != fd)
+		head = head->next;
+	return (head);
 }
 
 int		get_next_line(const int fd, char **line)
@@ -48,39 +55,48 @@ int		get_next_line(const int fd, char **line)
 	t_gnl			*temp;
 	int				i;
 
+	if (fd < 0 || read(fd, 0, 0) < 0)
+		return (-1); 
 	if (!(temp = find_fd(gnl, fd)))
 	{	
 		if (!(temp = (t_gnl*)ft_memalloc(sizeof(t_gnl))))
-			{
-				printf("malloc_error_temp\n");
 				return (-1);
-			}
 		temp->next = gnl;
 		gnl = temp;
-		temp->fd = fd; 
+		temp->fd = fd;
 	}
-	i = read_in_buf(fd, temp);
-	// if (!(temp = (t_gnl*)malloc(sizeof(t_gnl))))
-	// 	{
-	// 		printf("malloc_error2\n");
-	// 		return (-1);
-	// 	}
-	if (fd < 0 || read(fd, 0, 0) < 0)
-		return (-1); 
-	//in_line(temp, line);
-	return (i);		
+	printf("\n[fd:%d]", temp->fd);
+	if (temp->str != NULL && (temp->end = ft_strchr(gnl->str, '\n')))
+		return (in_line(temp, line));	
+	read_in_buf(fd, temp, &i);
+	return (in_line(temp, line));
 }
 
 int		main()
 {
-	int		fd;
+	int		fd, fd2, fd3;
 	int		i;
 	char	*line;
 
-	/*fd = 0;*/
-	if ((fd = open("okay.c", O_RDWR)) < 0)
-		printf("Cannot open file.\n");
-	i = get_next_line(fd, &line);
-	printf("%d %s", i, "bytes\n");
+	fd = 0;
+	fd2 = open("okay.c", O_RDWR);
+	fd3 = open("readme.txt", O_RDWR);
+	//
+	i = get_next_line(fd2, &line);
+	printf("\n[gnl:%d] \n[line:%s]", i, line);
+	i = get_next_line(fd3, &line);
+	printf("\n[gnl:%d] \n[line:%s]", i, line);
+	i = get_next_line(fd2, &line);
+	printf("\n[gnl:%d] \n[line:%s]", i, line);
+	//
+	i = get_next_line(fd3, &line);
+	printf("\n[gnl:%d] \n[line:%s]", i, line);
+	i = get_next_line(fd2, &line);
+	printf("\n[gnl:%d] \n[line:%s]", i, line);
+	i = get_next_line(fd3, &line);
+	printf("\n[gnl:%d] \n[line:%s]", i, line);
+	i = get_next_line(fd3, &line);
+	printf("\n[gnl:%d] \n[line:%s]", i, line);
+	//
 	return (0);
 }
