@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 19:03:45 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/25 19:04:50 by solefir          ###   ########.fr       */
+/*   Updated: 2019/02/25 21:44:07 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ static int		in_line(t_gnl *node, char **line)
 		return (-1);
 	ft_strncpy(*line, node->str, i);
 	(*line)[i] = '\0';
-	if (node->end != NULL)
+	if (node->end != NULL && *(node->end + 1) != '\0')
 		node->end = ft_strsub(node->str, i + 1, node->leng - i);
+	else if (node->end != NULL && *(node->end + 1) == '\0')
+		node->end = NULL;
 	free(node->str);
 	node->leng -= (i + 1);
 	node->str = node->end;
@@ -35,7 +37,6 @@ static void		read_in_buf(const int fd, t_gnl *gnl, int *bytes)
 {
 	char	buf[BUFF_SIZE + 1];
 	char	*temp;
-	int		i;
 
 	while (gnl->end == NULL && (*bytes = read(fd, buf, BUFF_SIZE)) > 0)
 	{
@@ -76,7 +77,7 @@ int				get_next_line(const int fd, char **line)
 		gnl = temp;
 		temp->fd = fd;
 	}
-	if (temp->str != NULL && (temp->end = ft_strchr(gnl->str, '\n')))
+	if (temp->str != NULL && (temp->end = ft_strchr(temp->str, '\n')))
 		return (in_line(temp, line));
 	read_in_buf(fd, temp, &i);
 	return (in_line(temp, line));
