@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 19:03:45 by solefir           #+#    #+#             */
-/*   Updated: 2019/02/25 21:44:07 by solefir          ###   ########.fr       */
+/*   Updated: 2019/03/04 18:03:47 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,15 @@ static int		in_line(t_gnl *node, char **line)
 	return (1);
 }
 
-static void		read_in_buf(const int fd, t_gnl *gnl, int *bytes)
+static void		read_in_buf(const int fd, t_gnl *gnl)
 {
 	char	buf[BUFF_SIZE + 1];
 	char	*temp;
+	int		i;
 
-	while (gnl->end == NULL && (*bytes = read(fd, buf, BUFF_SIZE)) > 0)
+	while (gnl->end == NULL && (i = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		buf[*bytes] = '\0';
+		buf[i] = '\0';
 		if (gnl->str == NULL)
 			gnl->str = ft_strdup(buf);
 		else
@@ -50,7 +51,7 @@ static void		read_in_buf(const int fd, t_gnl *gnl, int *bytes)
 			free(temp);
 		}
 		gnl->end = ft_strchr(gnl->str, '\n');
-		gnl->leng += *bytes;
+		gnl->leng += i;
 	}
 }
 
@@ -65,7 +66,6 @@ int				get_next_line(const int fd, char **line)
 {
 	static t_gnl	*gnl = NULL;
 	t_gnl			*temp;
-	int				i;
 
 	if (fd < 0 || read(fd, 0, 0) < 0)
 		return (-1);
@@ -79,6 +79,6 @@ int				get_next_line(const int fd, char **line)
 	}
 	if (temp->str != NULL && (temp->end = ft_strchr(temp->str, '\n')))
 		return (in_line(temp, line));
-	read_in_buf(fd, temp, &i);
+	read_in_buf(fd, temp);
 	return (in_line(temp, line));
 }
