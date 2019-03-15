@@ -6,7 +6,7 @@
 /*   By: solefir <solefir@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/25 19:03:45 by solefir           #+#    #+#             */
-/*   Updated: 2019/03/04 18:03:47 by solefir          ###   ########.fr       */
+/*   Updated: 2019/03/15 18:39:24 by solefir          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ static int		in_line(t_gnl *node, char **line)
 
 	if (node->str == NULL)
 		return (0);
-	i = node->end != NULL ? node->end - node->str : ft_strlen(node->str);
-	if (!(*line = (char *)malloc(i + 1)))
+	i = node->end != NULL ? node->end - node->str : ft_strlen((size_t)node->str);
+	if (!(*line = (char *)malloc((size_t)(i + 1))))
 		return (-1);
-	ft_strncpy(*line, node->str, i);
+	ft_strncpy(*line, node->str, (size_t)i);
 	(*line)[i] = '\0';
 	if (node->end != NULL && *(node->end + 1) != '\0')
-		node->end = ft_strsub(node->str, i + 1, node->leng - i);
+		node->end = ft_strsub(node->str, i + 1, (size_t)(node->leng - i));
 	else if (node->end != NULL && *(node->end + 1) == '\0')
 		node->end = NULL;
 	free(node->str);
@@ -76,6 +76,7 @@ int				get_next_line(const int fd, char **line)
 		temp->next = gnl;
 		gnl = temp;
 		temp->fd = fd;
+		temp->end = NULL;
 	}
 	if (temp->str != NULL && (temp->end = ft_strchr(temp->str, '\n')))
 		return (in_line(temp, line));
